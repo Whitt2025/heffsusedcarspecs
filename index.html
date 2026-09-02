@@ -1,0 +1,269 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2022 Subaru Outback Limited | Zeigler Subaru of Schererville</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10151b;
+    --paper:#f4f5f7;
+    --paper-2:#ffffff;
+    --black:#0a0a0a;
+    --navy:#00538e;
+    --navy-deep:#003d68;
+    --red:#c41f0a;
+    --red-deep:#8e0e0f;
+    --lime:#8fd400;
+    --lime-deep:#6a9e00;
+    --line:#dde1e6;
+    --muted:#5b6470;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#dfe2e6;
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--ink);
+  }
+  h1,h2,h3,.display{
+    font-family:'Oswald',sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  button{font-family:inherit;cursor:pointer;}
+  button:focus-visible, input:focus-visible{outline:3px solid var(--lime);outline-offset:2px;}
+
+  /* the page itself: full-bleed on phones, centered column on wider screens */
+  .page{
+    max-width:480px;
+    margin:0 auto;
+    background:var(--paper);
+    min-height:100vh;
+    box-shadow:0 0 40px rgba(0,0,0,0.08);
+  }
+
+  .topbar{
+    position:sticky;top:0;z-index:30;
+    background:var(--black);color:#fff;
+    padding:14px 16px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .topbar .back{font-size:18px;line-height:1;color:#fff;text-decoration:none;}
+  .topbar .dealer{font-size:13px;font-weight:600;}
+  .topbar .stock{font-size:11px;color:#9aa5b1;}
+
+  .gallery{
+    background:linear-gradient(160deg,#1a2733,#0b1117 75%);
+    height:230px;position:relative;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .gallery .silhouette{width:220px;height:88px;opacity:0.9;}
+  .cpo-ribbon{
+    position:absolute;top:14px;left:14px;
+    background:var(--lime);color:var(--lime-deep);
+    font-size:11px;font-weight:700;letter-spacing:0.04em;
+    padding:6px 12px;border-radius:999px;
+  }
+  .dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px;}
+  .dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.35);border:none;padding:0;}
+  .dot.active{background:#fff;}
+
+  .content{padding:18px;}
+  .title-block{margin-bottom:16px;}
+  .title-block h1{font-size:21px;color:var(--ink);line-height:1.2;}
+  .title-block .trim{font-size:13px;color:var(--muted);margin-top:3px;}
+  .price-row{display:flex;align-items:baseline;justify-content:space-between;margin-top:10px;}
+  .price{font-family:'Oswald';font-weight:700;font-size:27px;color:var(--red-deep);}
+  .meta{font-size:12.5px;color:var(--muted);}
+  .idline{font-size:11px;color:#93989e;margin-top:7px;}
+
+  .card{
+    background:var(--paper-2);border:1px solid var(--line);border-radius:12px;
+    padding:16px;margin-bottom:14px;
+  }
+  .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .card-head h2{font-size:14px;color:var(--ink);letter-spacing:0.01em;}
+  .card p{font-size:13px;color:var(--muted);margin:4px 0 12px;line-height:1.5;}
+  .card-btn{
+    width:100%;background:var(--navy);color:#fff;border:none;
+    padding:12px;border-radius:8px;font-weight:700;font-size:13.5px;
+  }
+  .card-btn:hover{background:var(--navy-deep);}
+
+  .video-thumb{
+    height:150px;border-radius:8px;background:linear-gradient(135deg,#2c5aa0,#0f2c46);
+    display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative;
+    border:none;width:100%;
+  }
+  .play{
+    width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.9);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .play::after{
+    content:'';border-style:solid;border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--navy-deep);margin-left:3px;
+  }
+
+  .cpo-list{list-style:none;margin:0 0 12px;padding:0;font-size:13px;color:var(--ink);}
+  .cpo-list li{display:flex;gap:8px;padding:5px 0;}
+  .cpo-list li::before{content:'\2713';color:var(--lime-deep);font-weight:700;}
+  .cpo-terms{
+    font-size:12.5px;color:var(--navy);font-weight:600;cursor:pointer;
+    display:flex;align-items:center;gap:5px;background:none;border:none;padding:0;font-family:inherit;
+  }
+  .cpo-detail{
+    max-height:0;overflow:hidden;transition:max-height 0.25s ease;
+    font-size:12.5px;color:var(--muted);line-height:1.5;
+  }
+  .cpo-detail.open{max-height:200px;margin-top:9px;}
+
+  .alert-row{display:flex;gap:8px;}
+  .alert-row input{
+    flex:1;padding:10px 11px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-family:'Inter';
+    min-width:0;
+  }
+  .alert-row button{
+    background:var(--paper-2);border:1.5px solid var(--navy);color:var(--navy);
+    padding:0 16px;border-radius:8px;font-weight:700;font-size:13px;white-space:nowrap;
+  }
+
+  .footer-credit{
+    text-align:center;padding:16px 18px 100px;font-size:11.5px;color:#9aa1a9;
+  }
+  .footer-credit b{color:var(--muted);}
+
+  .action-bar{
+    position:sticky;bottom:0;left:0;right:0;z-index:30;
+    background:#fff;border-top:1px solid var(--line);
+    padding:12px 16px 16px;
+    display:flex;gap:10px;
+    max-width:480px;margin:0 auto;
+  }
+  .action-bar button{
+    flex:1;border:none;border-radius:9px;padding:13px 8px;font-weight:700;font-size:13.5px;
+  }
+  .action-bar .primary{background:var(--red);color:#fff;}
+  .action-bar .primary:hover{background:var(--red-deep);}
+  .action-bar .secondary{background:var(--paper);color:var(--ink);border:1.5px solid var(--line);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="topbar">
+    <a class="back" href="#" aria-label="Back to inventory">&#8592;</a>
+    <div>
+      <div class="dealer">Zeigler Subaru of Schererville</div>
+      <div class="stock mono">Stock #SZ24187</div>
+    </div>
+  </div>
+
+  <div class="gallery">
+    <svg class="silhouette" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vehicle photo placeholder">
+      <path d="M10 55 Q20 30 55 28 L80 15 Q100 8 125 15 L150 28 Q180 30 190 55 L190 60 L10 60 Z" stroke="#5b6470" stroke-width="2" fill="none"/>
+      <circle cx="45" cy="60" r="9" stroke="#5b6470" stroke-width="2" fill="none"/>
+      <circle cx="155" cy="60" r="9" stroke="#5b6470" stroke-width="2" fill="none"/>
+    </svg>
+    <div class="cpo-ribbon">CERTIFIED PRE-OWNED</div>
+    <div class="dots" role="tablist" aria-label="Vehicle photos">
+      <button class="dot active" aria-label="Photo 1" aria-selected="true"></button>
+      <button class="dot" aria-label="Photo 2" aria-selected="false"></button>
+      <button class="dot" aria-label="Photo 3" aria-selected="false"></button>
+      <button class="dot" aria-label="Photo 4" aria-selected="false"></button>
+      <button class="dot" aria-label="Photo 5" aria-selected="false"></button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="title-block">
+      <h1>2022 Subaru Outback Limited</h1>
+      <div class="trim">AWD &middot; 2.5i Limited &middot; Autumn Green Metallic</div>
+      <div class="price-row">
+        <span class="price mono">$28,995</span>
+        <span class="meta">34,200 mi</span>
+      </div>
+      <div class="idline mono">VIN &middot;&middot;&middot;&middot;&middot;&middot;482910</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Vehicle history report</h2></div>
+      <p>No accidents reported &middot; 2 previous owners &middot; Clean title</p>
+      <button class="card-btn">View full report</button>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>60-second walkaround</h2></div>
+      <button class="video-thumb" aria-label="Play vehicle walkaround video"><span class="play" aria-hidden="true"></span></button>
+      <p>Filmed on this exact vehicle, this week.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Subaru Certified Pre-Owned</h2></div>
+      <ul class="cpo-list">
+        <li>Multi-point inspection completed</li>
+        <li>Extended limited warranty included</li>
+        <li>24/7 roadside assistance included</li>
+      </ul>
+      <button class="cpo-terms" onclick="toggleTerms()" aria-expanded="false" aria-controls="cpoDetail">
+        <span id="termsLabel">View full terms</span> <span id="termsArrow" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="cpo-detail" id="cpoDetail">
+        Certification covers inspection, warranty length, and deductible details specific to this vehicle's age and mileage. Full terms are provided at time of purchase and on request from the dealership.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Price-drop alert</h2></div>
+      <p>Get a text if this vehicle's price changes.</p>
+      <div class="alert-row">
+        <label for="alertPhone" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Mobile number</label>
+        <input id="alertPhone" type="tel" placeholder="Mobile number">
+        <button type="button">Notify me</button>
+      </div>
+    </div>
+
+    <div class="footer-credit">
+      Vehicle page maintained by <b>Cars And Stripes Forever</b> for this dealership.
+    </div>
+  </div>
+
+  <div class="action-bar">
+    <button class="primary">Text about this vehicle</button>
+    <button class="secondary">Estimate my trade-in</button>
+  </div>
+</div>
+
+<script>
+  function toggleTerms(){
+    const detail = document.getElementById('cpoDetail');
+    const btn = document.querySelector('.cpo-terms');
+    const arrow = document.getElementById('termsArrow');
+    const label = document.getElementById('termsLabel');
+    const open = detail.classList.toggle('open');
+    arrow.innerHTML = open ? '&#9652;' : '&#9662;';
+    label.textContent = open ? 'Hide full terms' : 'View full terms';
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  document.querySelectorAll('.dot').forEach((dot) => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('.dot').forEach(d => {
+        d.classList.remove('active');
+        d.setAttribute('aria-selected','false');
+      });
+      dot.classList.add('active');
+      dot.setAttribute('aria-selected','true');
+    });
+  });
+</script>
+</body>
+</html>
