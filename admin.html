@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Control Panel — Cars And Stripes</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#00538e;--navy-deep:#003d68;--red:#c41f0a;--lime:#8fd400;--line:#dde1e6;--muted:#5b6470;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:#f4f5f7;font-family:'Inter',system-ui,sans-serif;color:#10151b;padding:28px 18px 60px;}
+  .wrap{max-width:520px;margin:0 auto;}
+  h1{font-family:'Oswald';text-transform:uppercase;font-size:22px;color:var(--navy-deep);margin:0 0 6px;}
+  .sub{color:var(--muted);font-size:13.5px;margin-bottom:22px;line-height:1.5;}
+  .note{
+    background:#fff8e1;border:1px solid #f0dca0;border-radius:8px;
+    padding:12px 14px;font-size:12.5px;color:#7a5c00;margin-bottom:24px;line-height:1.5;
+  }
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  }
+  .card .info h3{margin:0 0 3px;font-size:15px;}
+  .card .info .stock{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--muted);}
+  .card .status{font-size:11.5px;font-weight:700;margin-top:4px;}
+  .status.active{color:#2e7d32;}
+  .status.sold{color:var(--red);}
+  .switch{
+    position:relative;width:50px;height:28px;flex-shrink:0;
+  }
+  .switch input{display:none;}
+  .slider{
+    position:absolute;inset:0;background:#d5d9de;border-radius:999px;cursor:pointer;transition:0.2s;
+  }
+  .slider::before{
+    content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;
+    background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+  input:checked + .slider{background:var(--red);}
+  input:checked + .slider::before{transform:translateX(22px);}
+  .links{margin-top:6px;}
+  .links a{font-size:12px;color:var(--navy);text-decoration:none;font-weight:600;}
+  .reset-btn{
+    width:100%;margin-top:18px;background:var(--navy-deep);color:#fff;border:none;
+    padding:12px;border-radius:8px;font-weight:700;font-size:13.5px;cursor:pointer;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Demo Control Panel</h1>
+  <p class="sub">Not linked from anywhere public. Flip a switch to instantly show what a shopper sees if that vehicle sells — no page edits, no reprinting.</p>
+  <div class="note">This toggle lives in your browser only (not a real shared database yet) — it's here to demonstrate the mechanism before Part Two of the manual (the real backend) is built.</div>
+
+  <div id="cards"></div>
+
+  <button class="reset-btn" onclick="resetAll()">Reset all to Active</button>
+</div>
+
+<script>
+  const VEHICLES = [
+    { code: 'SZ24187', name: '2022 Subaru Outback Limited', dealer: 'Zeigler Subaru of Schererville' },
+    { code: 'NC24198', name: '2021 Cadillac XT5 Premium Luxury', dealer: 'Napleton Cadillac Oaklawn' },
+    { code: 'AC24501', name: '2023 Chevrolet Equinox LT', dealer: 'Advantage Chevrolet Hodgkins' },
+  ];
+
+  function keyFor(code){ return 'csf_demo_sold_' + code; }
+
+  function render(){
+    const container = document.getElementById('cards');
+    container.innerHTML = '';
+    VEHICLES.forEach(v => {
+      const isSold = localStorage.getItem(keyFor(v.code)) === 'true';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="info">
+          <h3>${v.name}</h3>
+          <div class="stock">Stock #${v.code} &middot; ${v.dealer}</div>
+          <div class="status ${isSold ? 'sold' : 'active'}">${isSold ? 'MARKED SOLD' : 'ACTIVE'}</div>
+          <div class="links"><a href="go.html?car=${v.code}" target="_blank">Open this vehicle's QR link &rarr;</a></div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" ${isSold ? 'checked' : ''} onchange="toggle('${v.code}', this.checked)">
+          <span class="slider"></span>
+        </label>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function toggle(code, sold){
+    localStorage.setItem(keyFor(code), sold ? 'true' : 'false');
+    render();
+  }
+
+  function resetAll(){
+    VEHICLES.forEach(v => localStorage.removeItem(keyFor(v.code)));
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>
