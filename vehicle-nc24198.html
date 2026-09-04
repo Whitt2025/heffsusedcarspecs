@@ -59,20 +59,18 @@
   .topbar .stock{font-size:11px;color:#9aa5b1;}
 
   .gallery{
-    background:linear-gradient(160deg,#1a2733,#0b1117 75%);
+    background:#ffffff;border-bottom:1px solid var(--line);
     height:230px;position:relative;
     display:flex;align-items:center;justify-content:center;
   }
-  .gallery .silhouette{width:220px;height:88px;opacity:0.9;}
+  .gallery .vehicle-photo{max-width:88%;max-height:88%;object-fit:contain;}
   .cpo-ribbon{
     position:absolute;top:14px;left:14px;
     background:var(--lime);color:var(--lime-deep);
     font-size:11px;font-weight:700;letter-spacing:0.04em;
     padding:6px 12px;border-radius:999px;
   }
-  .dots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px;}
-  .dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.35);border:none;padding:0;}
-  .dot.active{background:#fff;}
+
 
   .content{padding:18px;}
   .title-block{margin-bottom:16px;}
@@ -145,19 +143,57 @@
     display:flex;gap:10px;
     max-width:480px;margin:0 auto;
   }
-  .action-bar button{
+  .action-bar button, .action-bar a{
     flex:1;border:none;border-radius:9px;padding:13px 8px;font-weight:700;font-size:13.5px;
+    text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;
+    font-family:inherit;cursor:pointer;
   }
   .action-bar .primary{background:var(--red);color:#fff;}
   .action-bar .primary:hover{background:var(--red-deep);}
   .action-bar .secondary{background:var(--paper);color:var(--ink);border:1.5px solid var(--line);}
+
+  /* Modals (trade-in estimator, vehicle history) */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(10,10,10,0.5);z-index:60;
+    align-items:flex-end;justify-content:center;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-sheet{
+    background:#fff;width:100%;max-width:480px;border-radius:16px 16px 0 0;
+    padding:20px;max-height:80vh;overflow-y:auto;
+  }
+  .modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .modal-head h2{font-size:16px;}
+  .modal-close{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1;padding:4px;}
+  .modal-field{margin-bottom:12px;}
+  .modal-field label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted);display:block;margin-bottom:6px;}
+  .modal-field select, .modal-field input{
+    width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:14px;font-family:'Inter';
+  }
+  .modal-btn{
+    width:100%;background:var(--navy);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;font-size:14px;margin-top:6px;
+  }
+  .trade-result{
+    margin-top:16px;padding:14px;background:var(--paper);border-radius:10px;text-align:center;display:none;
+  }
+  .trade-result.show{display:block;}
+  .trade-result .amount{font-family:'Oswald';font-weight:700;font-size:28px;color:var(--navy-deep);}
+  .trade-result .note{font-size:11.5px;color:var(--muted);margin-top:4px;}
+  .history-list{list-style:none;margin:0;padding:0;font-size:13px;}
+  .history-list li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);}
+  .history-list li:last-child{border-bottom:none;}
+  .history-list .label{color:var(--muted);}
+  .history-list .value{font-weight:600;}
+  .alert-success{
+    background:#eef8d6;border:1px solid #d3e8a3;border-radius:8px;padding:12px 14px;font-size:13px;color:#3d5a00;
+  }
 
   @media (prefers-reduced-motion: reduce){
     *{transition:none !important;}
   }
 </style>
 </head>
-<body>
+<body data-stock="NC24198">
 
 <div class="page">
   <div class="topbar">
@@ -169,19 +205,8 @@
   </div>
 
   <div class="gallery">
-    <svg class="silhouette" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vehicle photo placeholder">
-      <path d="M10 55 Q20 30 55 28 L80 15 Q100 8 125 15 L150 28 Q180 30 190 55 L190 60 L10 60 Z" stroke="#5b6470" stroke-width="2" fill="none"/>
-      <circle cx="45" cy="60" r="9" stroke="#5b6470" stroke-width="2" fill="none"/>
-      <circle cx="155" cy="60" r="9" stroke="#5b6470" stroke-width="2" fill="none"/>
-    </svg>
+    <img class="vehicle-photo" src="vehicle-nc24198.jpg" alt="2021 Cadillac XT5 Premium Luxury">
     <div class="cpo-ribbon">CERTIFIED PRE-OWNED</div>
-    <div class="dots" role="tablist" aria-label="Vehicle photos">
-      <button class="dot active" aria-label="Photo 1" aria-selected="true"></button>
-      <button class="dot" aria-label="Photo 2" aria-selected="false"></button>
-      <button class="dot" aria-label="Photo 3" aria-selected="false"></button>
-      <button class="dot" aria-label="Photo 4" aria-selected="false"></button>
-      <button class="dot" aria-label="Photo 5" aria-selected="false"></button>
-    </div>
   </div>
 
   <div class="content">
@@ -189,7 +214,7 @@
       <h1>2021 Cadillac XT5 Premium Luxury</h1>
       <div class="trim">AWD &middot; Premium Luxury &middot; Crystal White Tricoat</div>
       <div class="price-row">
-        <span class="price mono">$32,450</span>
+        <span class="price mono" id="priceValue">$32,450</span>
         <span class="meta">28,600 mi</span>
       </div>
       <div class="idline mono">VIN &middot;&middot;&middot;&middot;&middot;&middot;119274</div>
@@ -198,7 +223,7 @@
     <div class="card">
       <div class="card-head"><h2>Vehicle history report</h2></div>
       <p>No accidents reported &middot; 2 previous owners &middot; Clean title</p>
-      <button class="card-btn">View full report</button>
+      <button class="card-btn" onclick="openModal('historyModal')">View full report</button>
     </div>
 
     <div class="card">
@@ -224,11 +249,13 @@
 
     <div class="card">
       <div class="card-head"><h2>Price-drop alert</h2></div>
-      <p>Get a text if this vehicle's price changes.</p>
-      <div class="alert-row">
-        <label for="alertPhone" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Mobile number</label>
-        <input id="alertPhone" type="tel" placeholder="Mobile number">
-        <button type="button">Notify me</button>
+      <div id="alertArea">
+        <p>Get a text if this vehicle's price changes.</p>
+        <div class="alert-row">
+          <label for="alertPhone" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Mobile number</label>
+          <input id="alertPhone" type="tel" placeholder="Mobile number">
+          <button type="button" onclick="submitAlert()">Notify me</button>
+        </div>
       </div>
     </div>
 
@@ -238,10 +265,100 @@
   </div>
 
   <div class="action-bar">
-    <button class="primary">Text about this vehicle</button>
-    <button class="secondary">Estimate my trade-in</button>
+    <a class="primary" id="smsLink" href="sms:+18157919250">Text about this vehicle</a>
+    <button class="secondary" onclick="openModal('tradeModal')">Estimate my trade-in</button>
   </div>
 </div>
+
+<!-- Vehicle history modal -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h2>Full vehicle history</h2>
+      <button class="modal-close" onclick="closeModal('historyModal')" aria-label="Close">&times;</button>
+    </div>
+    <ul class="history-list">
+      <li><span class="label">Accidents reported</span><span class="value">None</span></li>
+      <li><span class="label">Previous owners</span><span class="value">2</span></li>
+      <li><span class="label">Title status</span><span class="value">Clean</span></li>
+      <li><span class="label">Service records on file</span><span class="value">11</span></li>
+      <li><span class="label">Odometer check</span><span class="value">Passed</span></li>
+      <li><span class="label">Last reported use</span><span class="value">Personal</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Trade-in estimator modal -->
+<div class="modal-overlay" id="tradeModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h2>Estimate your trade-in</h2>
+      <button class="modal-close" onclick="closeModal('tradeModal')" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-field">
+      <label for="tradeMileage">Your vehicle's mileage</label>
+      <input type="number" id="tradeMileage" placeholder="e.g. 62000">
+    </div>
+    <div class="modal-field">
+      <label for="tradeCondition">Condition</label>
+      <select id="tradeCondition">
+        <option value="0.78">Excellent</option>
+        <option value="0.68" selected>Good</option>
+        <option value="0.55">Fair</option>
+      </select>
+    </div>
+    <button class="modal-btn" onclick="calculateTrade()">Get my estimate</button>
+    <div class="trade-result" id="tradeResult">
+      <div class="amount mono" id="tradeAmount">$0</div>
+      <div class="note">Rough estimate only &mdash; based on this vehicle's listed price, for illustration.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function getStock(){ return document.body.dataset.stock; }
+
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+  function calculateTrade(){
+    const priceText = document.getElementById('priceValue').textContent.replace(/[^0-9]/g,'');
+    const price = parseInt(priceText, 10) || 0;
+    const mileage = parseInt(document.getElementById('tradeMileage').value, 10) || 60000;
+    const conditionFactor = parseFloat(document.getElementById('tradeCondition').value);
+    const mileagePenalty = Math.min(mileage / 100000, 0.3); // higher mileage trims more, capped
+    let estimate = price * conditionFactor * (1 - mileagePenalty);
+    estimate = Math.max(Math.round(estimate / 50) * 50, 500);
+    document.getElementById('tradeAmount').textContent = '$' + estimate.toLocaleString();
+    document.getElementById('tradeResult').classList.add('show');
+  }
+
+  function submitAlert(){
+    const phone = document.getElementById('alertPhone').value.trim();
+    if(!phone){ return; }
+    localStorage.setItem('csf_alert_' + getStock(), phone);
+    document.getElementById('alertArea').innerHTML =
+      '<div class="alert-success">You\'re set &mdash; we\'ll text <strong>' + phone + '</strong> if this price changes.</div>';
+  }
+
+  // Reflect a price drop set from the admin demo panel, if any
+  (function applyPriceOverride(){
+    const override = localStorage.getItem('csf_price_' + getStock());
+    if(override){
+      document.getElementById('priceValue').textContent = '$' + parseInt(override,10).toLocaleString();
+    }
+  })();
+
+  // Build the click-to-text link dynamically from the page's own content —
+  // avoids hardcoding vehicle-specific text that would need separate upkeep per page.
+  (function setupSmsLink(){
+    const link = document.getElementById('smsLink');
+    const title = document.querySelector('h1').textContent.trim();
+    const stock = getStock();
+    const body = encodeURIComponent(`Hi, I'm interested in Stock #${stock} - ${title}`);
+    link.href = 'sms:+18157919250?body=' + body;
+  })();
+</script>
 
 <script>
   function toggleTerms(){
@@ -254,16 +371,7 @@
     label.textContent = open ? 'Hide full terms' : 'View full terms';
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
-  document.querySelectorAll('.dot').forEach((dot) => {
-    dot.addEventListener('click', () => {
-      document.querySelectorAll('.dot').forEach(d => {
-        d.classList.remove('active');
-        d.setAttribute('aria-selected','false');
-      });
-      dot.classList.add('active');
-      dot.setAttribute('aria-selected','true');
-    });
-  });
+
 </script>
 </body>
 </html>
