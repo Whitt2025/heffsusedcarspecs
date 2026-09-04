@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Finding your vehicle...</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#f4f5f7;color:#10151b;
+    display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;}
+  p{color:#5b6470;font-size:14px;}
+</style>
+</head>
+<body>
+  <div><p id="msg">Loading vehicle info...</p></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('car');
+    const DEMO_KEY = 'csf_demo_sold_' + code;
+
+    if (!code) {
+      document.getElementById('msg').textContent = 'No vehicle code provided.';
+    } else if (localStorage.getItem(DEMO_KEY) === 'true') {
+      // Demo toggle says this one's been marked sold — skip the real lookup entirely
+      window.location.href = 'sold.html';
+    } else {
+      fetch('lookup.json')
+        .then(response => response.json())
+        .then(lookup => {
+          const destination = lookup[code];
+          if (destination) {
+            window.location.href = destination;
+          } else {
+            document.getElementById('msg').textContent = 'Vehicle not found. It may have sold.';
+          }
+        })
+        .catch(() => {
+          document.getElementById('msg').textContent = 'Something went wrong loading this vehicle.';
+        });
+    }
+  </script>
+</body>
+</html>
