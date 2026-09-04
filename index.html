@@ -20,8 +20,8 @@
   .head p{color:var(--muted);font-size:13.5px;margin-top:6px;}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
   .card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;display:block;}
-  .art{height:130px;background:linear-gradient(160deg,#1a2733,#0b1117 75%);position:relative;display:flex;align-items:center;justify-content:center;}
-  .art svg{width:140px;height:56px;opacity:0.85;}
+  .art{height:130px;background:#ffffff;border-bottom:1px solid var(--line);position:relative;display:flex;align-items:center;justify-content:center;}
+  .art img{max-width:90%;max-height:90%;object-fit:contain;}
   .ribbon{position:absolute;top:10px;left:10px;background:var(--lime);color:var(--lime-deep);font-size:10px;font-weight:700;letter-spacing:0.04em;padding:4px 9px;border-radius:999px;}
   .ribbon.sold{background:var(--red);color:#fff;}
   .body{padding:14px 16px 18px;}
@@ -53,31 +53,28 @@
 
 <script>
   const VEHICLES = [
-    { code:'SZ24187', name:'2022 Subaru Outback Limited', dealer:'Zeigler Subaru of Schererville', price:'$28,995', miles:'34,200 mi', page:'vehicle-sz24187.html' },
-    { code:'NC24198', name:'2021 Cadillac XT5 Premium Luxury', dealer:'Napleton Cadillac Oaklawn', price:'$32,450', miles:'28,600 mi', page:'vehicle-nc24198.html' },
-    { code:'AC24501', name:'2023 Chevrolet Equinox LT', dealer:'Advantage Chevrolet Hodgkins', price:'$24,780', miles:'19,900 mi', page:'vehicle-ac24501.html' },
+    { code:'SZ24187', name:'2022 Subaru Outback Limited', dealer:'Zeigler Subaru of Schererville', price:'$28,995', miles:'34,200 mi', page:'vehicle-sz24187.html', photo:'vehicle-sz24187.jpg' },
+    { code:'NC24198', name:'2021 Cadillac XT5 Premium Luxury', dealer:'Napleton Cadillac Oaklawn', price:'$32,450', miles:'28,600 mi', page:'vehicle-nc24198.html', photo:'vehicle-nc24198.jpg' },
+    { code:'AC24501', name:'2023 Chevrolet Equinox LT', dealer:'Advantage Chevrolet Hodgkins', price:'$24,780', miles:'19,900 mi', page:'vehicle-ac24501.html', photo:'vehicle-ac24501.jpg' },
   ];
 
   function keyFor(code){ return 'csf_demo_sold_' + code; }
-
-  const carSvg = `<svg viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 55 Q20 30 55 28 L80 15 Q100 8 125 15 L150 28 Q180 30 190 55 L190 60 L10 60 Z" stroke="#5b6470" stroke-width="2" fill="none"/>
-      <circle cx="45" cy="60" r="9" stroke="#5b6470" stroke-width="2" fill="none"/>
-      <circle cx="155" cy="60" r="9" stroke="#5b6470" stroke-width="2" fill="none"/>
-    </svg>`;
+  function priceKeyFor(code){ return 'csf_price_' + code; }
 
   const grid = document.getElementById('grid');
   VEHICLES.forEach(v => {
     const isSold = localStorage.getItem(keyFor(v.code)) === 'true';
+    const priceOverride = localStorage.getItem(priceKeyFor(v.code));
+    const displayPrice = priceOverride ? '$' + parseInt(priceOverride, 10).toLocaleString() : v.price;
     const a = document.createElement('a');
     a.className = 'card';
     a.href = isSold ? 'sold.html' : v.page;
     a.innerHTML = `
-      <div class="art">${carSvg}<span class="ribbon ${isSold ? 'sold' : ''}">${isSold ? 'SOLD' : 'CERTIFIED PRE-OWNED'}</span></div>
+      <div class="art"><img src="${v.photo}" alt="${v.name}"><span class="ribbon ${isSold ? 'sold' : ''}">${isSold ? 'SOLD' : 'CERTIFIED PRE-OWNED'}</span></div>
       <div class="body">
         <h3>${v.name}</h3>
         <div class="dealer">${v.dealer}</div>
-        <div class="price-row"><span class="price">${v.price}</span><span class="miles">${v.miles}</span></div>
+        <div class="price-row"><span class="price">${displayPrice}</span><span class="miles">${v.miles}</span></div>
         <div class="stock">Stock #${v.code}</div>
       </div>
     `;
